@@ -13,14 +13,8 @@ namespace Nexmo.Api.Test.Unit
         [Test]
         public void should_get_account_balance()
         {
-            var resp = new Mock<IWebResponse>();
-            resp.Setup(e => e.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"value\":0.43}")));
-            _request.Setup(e => e.GetResponse()).Returns(resp.Object);
+            Account.Client = new Client(new MockHttpMessageHandler());
             var balance = Account.GetBalance();
-
-            _mock.Verify(h => h.CreateHttp(new Uri(
-                string.Format("{0}/account/get-balance/{1}/{2}", RestUrl, ApiKey, ApiSecret))),
-                Times.Once);
             Assert.AreEqual(.43d, balance);
         }
 

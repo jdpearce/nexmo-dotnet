@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Nexmo.Api.Request;
+using System.Threading.Tasks;
 
 namespace Nexmo.Api
 {
     public static class Account
     {
+        public static Client Client { get; set; } = new Client();
+
         public class Balance
         {
             public decimal value { get; set; }
@@ -75,12 +79,7 @@ namespace Nexmo.Api
 
         public static decimal GetBalance()
         {
-            var json = ApiRequest.DoRequest(ApiRequest.GetBaseUriFor(typeof(Account),
-                "/account/get-balance/" +
-                ConfigurationManager.AppSettings["Nexmo.api_key"] + "/" + ConfigurationManager.AppSettings["Nexmo.api_secret"]));
-
-            var obj = JsonConvert.DeserializeObject<Balance>(json);
-            return obj.value;
+            return Client.GetResource<Balance>("/account/get-balance/").value;
         }
 
         public static Pricing GetPricing(string country)
